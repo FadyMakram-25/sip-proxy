@@ -1,0 +1,18 @@
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget ca-certificates \
+    && wget -q "https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.$(uname -m)" \
+         -O /usr/local/bin/ttyd \
+    && chmod +x /usr/local/bin/ttyd \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy fs_cli from the freeswitch build
+COPY --from=freeswitch /usr/bin/fs_cli /usr/bin/fs_cli
+
+EXPOSE 7681
+
+CMD ["ttyd", "-p", "7681", "-c", "admin:ClueCon", \
+     "fs_cli", "-H", "127.0.0.1", "-P", "8021", "-p", "ClueCon"]

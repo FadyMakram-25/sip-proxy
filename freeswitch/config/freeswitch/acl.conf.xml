@@ -1,0 +1,14 @@
+<configuration name="acl.conf" description="Network Access Control Lists">
+  <network-lists>
+
+    <!--
+      TODO: replace the node value with the actual Genesys SIP trunk IP or CIDR.
+      You can add multiple <node> entries for multiple IPs.
+    -->
+    <list name="genesys-acl" default="deny">
+      <node type="allow" cidr="TODO_GENESYS_SIP_IP/32"/>
+      <!-- <node type="allow" cidr="TODO_GENESYS_SIP_IP_2/32"/> -->
+    </list>
+
+  </network-lists>
+</configuration>

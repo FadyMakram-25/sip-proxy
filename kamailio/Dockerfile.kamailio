@@ -1,0 +1,14 @@
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    netbase \
+    kamailio \
+    kamailio-tls-modules \
+    kamailio-extra-modules \
+    && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 5060/udp 5060/tcp
+
+CMD ["kamailio", "-DD", "-E", "-f", "/etc/kamailio/kamailio.cfg"]

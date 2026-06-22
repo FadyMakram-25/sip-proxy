@@ -1,0 +1,53 @@
+<configuration name="sofia.conf" description="Sofia SIP - LiveKit outbound profile">
+  <profiles>
+    <profile name="livekit">
+      <settings>
+        <!-- TODO: set to your VM's public IP -->
+        <param name="sip-ip" value="$${local_ip_v4}"/>
+        <param name="rtp-ip" value="$${local_ip_v4}"/>
+
+        <!-- Use a different port than the Genesys profile -->
+        <param name="sip-port" value="5080"/>
+
+        <!-- TODO: set to your VM's public IP -->
+        <param name="ext-sip-ip" value="TODO_YOUR_VM_PUBLIC_IP"/>
+        <param name="ext-rtp-ip" value="TODO_YOUR_VM_PUBLIC_IP"/>
+
+        <param name="codec-prefs" value="PCMU,PCMA,G722,opus"/>
+        <param name="inbound-codec-negotiation" value="generous"/>
+        <param name="rtp-timeout-sec" value="300"/>
+        <param name="rtp-hold-timeout-sec" value="1800"/>
+
+        <param name="context" value="livekit-inbound"/>
+        <param name="rfc2833-pt" value="101"/>
+        <param name="dtmf-duration" value="2000"/>
+        <param name="inbound-late-negotiation" value="true"/>
+        <param name="enable-timer" value="false"/>
+        <param name="session-timeout" value="1800"/>
+
+        <param name="rtp-start-port" value="16384"/>
+        <param name="rtp-end-port" value="32768"/>
+      </settings>
+
+      <gateways>
+        <gateway name="livekit-sip-trunk">
+          <!-- TODO: LiveKit SIP trunk host (from LiveKit Cloud dashboard or self-hosted) -->
+          <param name="realm" value="TODO_LIVEKIT_SIP_HOST"/>
+          <param name="proxy" value="TODO_LIVEKIT_SIP_HOST"/>
+
+          <!-- TODO: LiveKit SIP trunk credentials -->
+          <param name="username" value="TODO_LIVEKIT_SIP_USERNAME"/>
+          <param name="password" value="TODO_LIVEKIT_SIP_PASSWORD"/>
+
+          <param name="from-domain" value="TODO_YOUR_VM_PUBLIC_IP"/>
+          <param name="register" value="true"/>
+          <param name="retry-seconds" value="30"/>
+          <param name="expire-seconds" value="3600"/>
+          <param name="ping" value="25"/>
+          <param name="caller-id-in-from" value="true"/>
+          <param name="codec-prefs" value="PCMU,PCMA"/>
+        </gateway>
+      </gateways>
+    </profile>
+  </profiles>
+</configuration>

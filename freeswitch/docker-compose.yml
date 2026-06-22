@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  freeswitch:
+    build:
+      context: .
+      dockerfile: Dockerfile.freeswitch
+    container_name: freeswitch
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./config/freeswitch:/etc/freeswitch
+      - ./logs:/var/log/freeswitch
+    environment:
+      - FREESWITCH_DOMAIN=${FREESWITCH_DOMAIN}
+    cap_add:
+      - SYS_NICE
+    ulimits:
+      rtprio: 99
+
+  freeswitch-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    container_name: freeswitch-ui
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - freeswitch
+    # Open http://YOUR_VM_IP:7681 — login: admin / ClueCon

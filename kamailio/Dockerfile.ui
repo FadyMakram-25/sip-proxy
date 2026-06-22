@@ -1,0 +1,16 @@
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    kamailio wget ca-certificates \
+    && wget -q "https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.$(uname -m)" \
+         -O /usr/local/bin/ttyd \
+    && chmod +x /usr/local/bin/ttyd \
+    && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 7681
+
+# kamcmd connects to kamailio via shared unix socket at /var/run/kamailio/kamailio_ctl
+CMD ["ttyd", "-p", "7681", "-c", "admin:admin", "--writable", \
+     "kamcmd", "-s", "unix:/var/run/kamailio/kamailio_ctl"]

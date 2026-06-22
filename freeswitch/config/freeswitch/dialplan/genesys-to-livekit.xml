@@ -1,0 +1,65 @@
+<include>
+  <!-- ============================================================
+       Context: genesys-inbound
+       Handles calls arriving from Genesys and bridges them to
+       the LiveKit SIP trunk gateway.
+       ============================================================ -->
+  <context name="genesys-inbound">
+
+    <extension name="genesys-to-livekit" continue="false">
+      <!--
+        TODO: adjust the destination_number pattern to match the
+        DNIS/DID format Genesys sends (e.g. ^(\d{10})$ for 10-digit).
+      -->
+      <condition field="destination_number" expression="^(.+)$">
+
+        <!-- Preserve the original caller ID from Genesys -->
+        <action application="set" data="effective_caller_id_number=${caller_id_number}"/>
+        <action application="set" data="effective_caller_id_name=${caller_id_name}"/>
+
+        <!-- Pass call metadata to LiveKit via SIP headers (optional) -->
+        <!-- TODO: add any custom X- headers LiveKit expects -->
+        <!-- <action application="set" data="sip_h_X-Genesys-CallID=${sip_call_id}"/> -->
+
+        <!-- Codec negotiation -->
+        <action application="set" data="inherit_codec=true"/>
+
+        <!-- Bridge to LiveKit via the livekit profile gateway -->
+        <!--
+          TODO: change the dial string if LiveKit expects a specific
+          user/room format, e.g. sofia/livekit/room-name@livekit-sip-trunk
+        -->
+        <action application="bridge" data="sofia/gateway/livekit-sip-trunk/${destination_number}"/>
+
+        <!-- Fallback if bridge fails -->
+        <action application="respond" data="503 Service Unavailable"/>
+      </condition>
+    </extension>
+
+    <!-- Catch-all: reject anything not matched above -->
+    <extension name="catch-all">
+      <condition field="destination_number" expression="^(.+)$">
+        <action application="respond" data="404 Not Found"/>
+      </condition>
+    </extension>
+
+  </context>
+
+
+  <!-- ============================================================
+       Context: livekit-inbound
+       Handles any inbound leg arriving on the LiveKit-facing profile
+       (e.g. LiveKit initiating a call back toward Genesys).
+       Extend this if you need bidirectional routing.
+       ============================================================ -->
+  <context name="livekit-inbound">
+
+    <extension name="catch-all">
+      <condition field="destination_number" expression="^(.+)$">
+        <!-- TODO: implement if LiveKit needs to reach Genesys -->
+        <action application="respond" data="404 Not Found"/>
+      </condition>
+    </extension>
+
+  </context>
+</include>

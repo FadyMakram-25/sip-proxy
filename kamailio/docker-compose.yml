@@ -1,0 +1,30 @@
+services:
+  kamailio:
+    build:
+      context: .
+      dockerfile: Dockerfile.kamailio
+    container_name: kamailio
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./config/kamailio:/etc/kamailio
+      - ./logs:/var/log/kamailio
+      - kamailio-ctl:/var/run/kamailio
+    cap_add:
+      - NET_ADMIN
+
+  kamailio-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    container_name: kamailio-ui
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - kamailio-ctl:/var/run/kamailio
+    depends_on:
+      - kamailio
+    # Open http://YOUR_VM_IP:7681 — login: admin / admin
+
+volumes:
+  kamailio-ctl:

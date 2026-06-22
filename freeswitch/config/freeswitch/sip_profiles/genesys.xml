@@ -1,0 +1,45 @@
+<configuration name="sofia.conf" description="Sofia SIP - Genesys inbound profile">
+  <profiles>
+    <profile name="genesys">
+      <settings>
+        <!-- TODO: set to your VM's public IP -->
+        <param name="sip-ip" value="$${local_ip_v4}"/>
+        <param name="rtp-ip" value="$${local_ip_v4}"/>
+
+        <!-- SIP port FreeSWITCH listens on for Genesys -->
+        <param name="sip-port" value="5060"/>
+
+        <!-- TODO: set to your VM's public IP for NAT traversal -->
+        <param name="ext-sip-ip" value="TODO_YOUR_VM_PUBLIC_IP"/>
+        <param name="ext-rtp-ip" value="TODO_YOUR_VM_PUBLIC_IP"/>
+
+        <param name="codec-prefs" value="PCMU,PCMA,G722"/>
+        <param name="inbound-codec-negotiation" value="generous"/>
+        <param name="rtp-timeout-sec" value="300"/>
+        <param name="rtp-hold-timeout-sec" value="1800"/>
+
+        <!-- Restrict inbound SIP to Genesys IP only -->
+        <!-- TODO: set to your Genesys SIP trunk IP/CIDR -->
+        <param name="apply-inbound-acl" value="genesys-acl"/>
+
+        <param name="log-auth-failures" value="true"/>
+        <param name="forward-unsolicited-mwi-notify" value="false"/>
+        <param name="context" value="genesys-inbound"/>
+        <param name="dialect" value="genesys"/>
+        <param name="rfc2833-pt" value="101"/>
+        <param name="dtmf-duration" value="2000"/>
+        <param name="inbound-late-negotiation" value="true"/>
+        <param name="enable-timer" value="false"/>
+        <param name="session-timeout" value="1800"/>
+
+        <!-- RTP port range -->
+        <param name="rtp-start-port" value="16384"/>
+        <param name="rtp-end-port" value="32768"/>
+      </settings>
+
+      <gateways>
+        <!-- No outbound gateway needed on the Genesys-facing profile -->
+      </gateways>
+    </profile>
+  </profiles>
+</configuration>
