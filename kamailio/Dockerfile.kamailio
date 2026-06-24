@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     kamailio \
     kamailio-tls-modules \
     kamailio-extra-modules \
-    netbase \
     && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 5060/udp 5060/tcp
